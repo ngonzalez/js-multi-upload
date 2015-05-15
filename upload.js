@@ -78,7 +78,7 @@
                 reader.onload = (function(f) {
                     return function(e) {
                         options.set_params(e.target.result, data, file, function() {
-                            if ($.inArray(file_type, options.extensions)) {
+                            if (!options.extensions || $.inArray(file_type, options.extensions)) {
                                 post_data(data, function() {
                                     send_file(options);
                                 });
