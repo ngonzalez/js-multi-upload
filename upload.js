@@ -13,7 +13,7 @@
                     send_file({
                         input_id: $(e.target).attr("id"),
                         url: <%= upload_path.to_json %>,
-                        url_type: "POST",
+                        type: "POST",
                         extensions: [ '.jpg', '.gif', '.png' ],
                         set_params: function(result, data, file, callback) {
                             data.append('Filedata', file);
@@ -48,7 +48,7 @@
             function post_data(data, callback) {
                 $.ajax({
                     url: options.url,
-                    type: options.url_type,
+                    type: options.type,
                     processData: false,
                     contentType: false,
                     data: data,
