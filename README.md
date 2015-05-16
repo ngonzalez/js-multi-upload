@@ -1,7 +1,7 @@
 # jQuery Dynamic File Upload
 
 Example:
-```
+```javascript
         <input type="file" id="Filedata" name="Filedata[]" accept="image/*" multiple />
 
         <script type="text/javascript">
