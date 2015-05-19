@@ -23,8 +23,8 @@ Example:
                         complete: function() {
                             console.log('all files uploaded successfully');
                         },
-                        progress: function(counter, total_files) {
-                            console.log('uploading: ' + counter + '/' + total_files)
+                        progress: function(options) {
+                            console.log('uploading: ' + options.counter + '/' + options.total_files)
                         }
                     });
                 });
