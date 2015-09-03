@@ -34,9 +34,12 @@ Example:
 
                     $(document).ready(function() {
                         $("#Filedata").change(function(e) {
-                            upload_files({ input_id: $(e.target).attr("id") });
+                            upload_files({
+                                input_id: $(e.target).attr("id"),
+                                name: $(e.target).attr("id")
+                            });
                         });
-                    })
+                    });
 
                 });
             })(jQuery);
