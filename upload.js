@@ -2,7 +2,7 @@
     $(function() {
 
         window[ 'send_files' ] = function(options) {
-          
+
             var control = $("#" + options.input_id);
 
             var files = document.getElementById(options.input_id).files;
