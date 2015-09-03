@@ -1,46 +1,8 @@
-
-/*
-
-    jQuery Dynamic File Upload
-
-    Usage:
-
-        <input type="file" id="Filedata" name="Filedata[]" accept="image/*" multiple />
-
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#Filedata").change(function(e) {
-                    send_file({
-                        input_id: $(e.target).attr("id"),
-                        url: <%= upload_path.to_json %>,
-                        type: "POST",
-                        extensions: [ '.jpg', '.gif', '.png' ],
-                        set_params: function(result, data, file, callback) {
-                            data.append('Filedata', file);
-                            console.log(result); // data:image/jpeg;base64 ..
-                            callback();
-                        },
-                        no_files: function() {
-                            console.log('no files provided');
-                        },
-                        complete: function() {
-                            console.log('all files uploaded successfully');
-                        },
-                        progress: function(counter, total_files) {
-                            console.log('uploading: ' + counter + '/' + total_files)
-                        }
-                    });
-                });
-            })
-        </script>
-
-*/
-
 (function($) {
     $(function() {
 
-        window[ 'send_file' ] = function(options) {
-
+        window[ 'send_files' ] = function(options) {
+          
             var control = $("#" + options.input_id);
 
             var files = document.getElementById(options.input_id).files;
@@ -52,18 +14,26 @@
                     processData: false,
                     contentType: false,
                     data: data,
-                    success: function(data, textStatus, jqXHR) {
-                        callback();
+                    success: function(response, textStatus, jqXHR) {
+                        callback(response);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        options.error();
+                        options.error(textStatus, errorThrown);
                     }
                 });
             }
 
-            if (!options.counter) options.counter = 0;
+            function set_params(result, data, file, callback) {
+                data.append(options.name, file);
+                if (options.params) {
+                    $.each(options.params, function(k, v) {
+                        data.append(k, v);
+                    });
+                }
+                callback();
+            }
 
-            if (options.progress) options.progress({ counter: options.counter, total_files: files.length });
+            if (!options.counter) options.counter = 0;
 
             if (options.counter < files.length) {
 
@@ -77,10 +47,17 @@
 
                 reader.onload = (function(f) {
                     return function(e) {
-                        options.set_params(e.target.result, data, file, function() {
-                            if (!options.extensions || $.inArray(file_type, options.extensions)) {
-                                post_data(data, function() {
-                                    send_file(options);
+                        set_params(e.target.result, data, file, function() {
+                            if (!options.extensions || (options.extensions && $.inArray(file_type, options.extensions))) {
+                                post_data(data, function(response) {
+                                    if (options.progress) {
+                                        options.progress({
+                                            counter: options.counter,
+                                            total_files: files.length,
+                                            response: response
+                                        });
+                                    }
+                                    send_files(options);
                                 });
                             } else if (options.complete) {
                                 options.complete();
@@ -93,11 +70,6 @@
 
             } else {
 
-                if (options.no_files && files.length == 0) {
-                    options.no_files();
-                    return;
-                }
-
                 if (window.navigator.userAgent.indexOf("MSIE") > 0) {
                     setTimeout(function() {
                         control.replaceWith(control = control.clone(true));
@@ -105,8 +77,6 @@
                 } else {
                     control.val('');
                 }
-
-                if (options.progress) options.progress({ counter: files.length, total_files: files.length });
 
                 if (options.complete) options.complete();
 
