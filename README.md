@@ -3,45 +3,36 @@
 Example:
 
 
+```html
+<input type="file" id="Filedata" name="Filedata[]" accept="image/*" multiple />
+```
+
 ```javascript
-        <input type="file" id="Filedata" name="Filedata[]" accept="image/*" multiple />
+(function($) {
+    $(function() {
+        function set_progress(value) {
+            console.log('Progress: ' + value);
+        }
 
-        <script type="text/javascript">
-            (function($) {
-                $(function() {
+        function display_file(item) {
+            console.log(item);
+        }
 
-                    function upload_files(options) {
-                        send_files($.extend({
-                            url: UPLOAD_URL,
-                            type: "POST",
-                            extensions: [ '.jpg', '.gif', '.png' ],
-                            set_params: function(result, data, file, callback) {
-                                data.append('Filedata', file);
-                                callback();
-                            },
-                            complete: function() {
-                                console.log('complete');
-                            },
-                            error: function(textStatus, errorThrown) {
-                                console.log(textStatus + ": " + errorThrown);
-                            },
-                            progress: function(options) {
-                                console.log('uploading: ' + options.counter + '/' + options.total_files)
-                                console.log(options.response);
-                            }
-                        }, options));
+        $(document).ready(function() {
+            $("#Filedata").change(function(e) {
+                send_file({
+                    input_id: "Filedata",
+                    name: "upload",
+                    url: "http://example.com/uploads",
+                    type: "POST",
+                    progress: function(item) {
+                        set_progress(parseInt(item.counter / item.total_files * 100))
+                        display_file(item.response);
                     }
-
-                    $(document).ready(function() {
-                        $("#Filedata").change(function(e) {
-                            upload_files({
-                                input_id: $(e.target).attr("id"),
-                                name: $(e.target).attr("id")
-                            });
-                        });
-                    });
-
                 });
-            })(jQuery);
-        </script>
+            });
+        })
+
+    });
+})(jQuery);
 ```
