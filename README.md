@@ -20,7 +20,7 @@ Example:
 
         $(document).ready(function() {
             $("#Filedata").change(function(e) {
-                send_file({
+                send_files({
                     input_id: "Filedata",
                     name: "upload",
                     url: "http://example.com/uploads",
