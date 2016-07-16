@@ -1,9 +1,20 @@
 (function($) {
     $(function() {
 
-        window[ 'send_files' ] = function(options) {
+        $.widget('ui.sendFilesProxy', {
+          _init: function() {
+            //
+          },
+          send: function(options) {
+            sendFile($.extend(options, { input_id: $(this.element).attr('id') }))
+          }
+        });
 
-            var control = $("#" + options.input_id);
+        $.each($('input[type=file]'), function(i, element) { $(element).sendFilesProxy() });
+
+        function sendFile(options) {
+
+            var control = $('#' + options.input_id);
 
             var files = document.getElementById(options.input_id).files;
 
@@ -57,7 +68,7 @@
                                             response: response
                                         });
                                     }
-                                    send_files(options);
+                                    sendFile(options);
                                 });
                             } else if (options.complete) {
                                 options.complete();
@@ -70,7 +81,7 @@
 
             } else {
 
-                if (window.navigator.userAgent.indexOf("MSIE") > 0) {
+                if (window.navigator.userAgent.indexOf('MSIE') > 0) {
                     setTimeout(function() {
                         control.replaceWith(control = control.clone(true));
                     }, 1000);

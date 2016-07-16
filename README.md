@@ -4,35 +4,28 @@ Example:
 
 
 ```html
-<input type="file" id="Filedata" name="Filedata[]" accept="image/*" multiple />
+<input type="file" id="Filedata" name="Filedata[]" multiple />
 ```
 
 ```javascript
 (function($) {
     $(function() {
-        function set_progress(value) {
-            console.log('Progress: ' + value);
-        }
-
-        function display_file(item) {
-            console.log(item);
-        }
-
         $(document).ready(function() {
-            $("#Filedata").change(function(e) {
-                send_files({
-                    input_id: "Filedata",
-                    name: "upload",
-                    url: "http://example.com/uploads",
-                    type: "POST",
+            $('#Filedata').change(function(e) {
+                $(e.target).sendFilesProxy('send', {
+                    name: 'upload', // File Param Name
+                    url: 'http://example.com/uploads',
+                    type: 'POST',
                     progress: function(item) {
-                        set_progress(parseInt(item.counter / item.total_files * 100))
-                        display_file(item.response);
+                      // Called after each file upload,
+                      // with server response passed as item parameter
+                    },
+                    complete: function() {
+                      // Called when all files are uploaded
                     }
                 });
             });
         })
-
     });
 })(jQuery);
 ```
