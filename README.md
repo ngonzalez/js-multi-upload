@@ -16,9 +16,8 @@ Example:
                     name: 'upload', // File Param Name
                     url: 'http://example.com/uploads',
                     type: 'POST',
-                    progress: function(item) {
+                    progress: function(response) {
                       // Called after each file upload,
-                      // with server response passed as item parameter
                     },
                     complete: function() {
                       // Called when all files are uploaded
