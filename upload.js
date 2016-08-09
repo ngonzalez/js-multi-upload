@@ -39,8 +39,6 @@
               return _this.send(options);
             };
           })(this));
-        } else if (options.complete) {
-          return options.complete();
         }
       },
       _set_params: function(data, file, options) {
